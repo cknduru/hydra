@@ -1,6 +1,7 @@
 import logger as logger
 from threading import Thread
 import time
+import sys
 
 import temperature_sensor as ts
 import control_fan as cf
@@ -25,7 +26,8 @@ def start_services(q_in, q_out):
 	try:
 		Thread(target=ts.setup, args=(q_in, q_out)).start()
 	except Exception as ex:
-		logger.write(MODULE, "unable to start thread")
+		logger.write_e(MODULE, "unable to start thread")
+		sys.exit(-1)
 
 if __name__=='__main__':
 	logger.setup()
@@ -34,6 +36,7 @@ if __name__=='__main__':
 	q_out = []
 
 	start_services(q_in, q_out)
+	logger.write(MODULE, 'booted')
 
 	while True:
 		try:
@@ -43,5 +46,3 @@ if __name__=='__main__':
 		except:
 			# no readings
 			pass
-
-	logger.write(MODULE, 'booted')
